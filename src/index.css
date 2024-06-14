@@ -75,7 +75,9 @@ body {
 }
 
 .span-block {
-  display: block;
+  /* display: block; */
+  /* background-color: red; */
+  text-align: center;
 }
 
 .today-place-date-time {
@@ -93,8 +95,17 @@ body {
 }
 
 .icon {
-  height: 100px;
+  height: 130px;
   text-align: center;
+}
+
+img{
+  /* background-color: brown; */
+}
+
+p{
+  margin: -20px 0;
+  /* background-color: red; */
 }
 
 .today-weather {

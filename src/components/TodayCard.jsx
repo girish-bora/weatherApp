@@ -11,12 +11,21 @@ const TodayCard = ({ url }) => {
 
   const [isFetching, setIsFetching] = useState(false);
 
+  const [isError, setIsError] = useState(false);
+
   useEffect(() => {
     console.log("useEffect has been called");
     const fetchWeather = async () => {
       setIsFetching(true);
       const response = await fetch(url);
       const resData = await response.json();
+
+      if(!response.ok){
+        setIsError(true);
+      } else{
+        setIsError(false);
+      }
+
       setWeather(resData);
       setIsFetching(false);
     };
@@ -25,7 +34,7 @@ const TodayCard = ({ url }) => {
 
   console.log(weather);
 
-  let today, time;
+  let today, day, time;
 
   if (weather) {
     var a = new Date(weather.dt * 1000);
@@ -53,16 +62,21 @@ const TodayCard = ({ url }) => {
     time =
       hour +
       ":" +
-      (min < 10 ? "0" + min : min) +
-      ":" +
-      (sec < 10 ? "0" + sec : sec);
+      (min < 30 ? "00" : "30") //+
+      //":" +
+      //(sec < 10 ? "0" + sec : sec);
     //console.log(weather.weather[0].icon);
+
+    var days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Thursday', 'Friday'];
+
+    day = days [(Math.floor((weather.dt + 19800) / 86400) +4) % 7];
   }
 
   return (
     <>
-      {isFetching && <div className="today-card today-card-loading"><span class="span-block">Loading Data...</span></div> }
-      {!isFetching && weather && (
+      {isFetching && <div className="today-card today-card-loading"><span className="span-block">Loading Data...</span></div> }
+      {!isFetching && isError && <div className="today-card today-card-loading"><span className="span-block">Please enter a valid city.</span></div>}
+      {!isFetching && weather && !isError && (
         <div className="today-card">
           <div className="today-place-date-time">
             <div className="icon">
@@ -70,12 +84,13 @@ const TodayCard = ({ url }) => {
                 src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
                 alt="Error"
               />
+              <p>{weather.weather[0].description}</p>
             </div>
             <div className="holder">
               <div className="place">{weather.name}</div>
               <div className="date-time">
                 <div className="day">{today}</div>
-                <div className="date">{time}</div>
+                <div className="date">{day}, {time}</div>
               </div>
             </div>
           </div>
