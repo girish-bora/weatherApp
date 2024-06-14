@@ -9,12 +9,16 @@ const TodayCard = ({ url }) => {
 
   const [weather, setWeather] = useState(null);
 
+  const [isFetching, setIsFetching] = useState(false);
+
   useEffect(() => {
     console.log("useEffect has been called");
     const fetchWeather = async () => {
+      setIsFetching(true);
       const response = await fetch(url);
       const resData = await response.json();
       setWeather(resData);
+      setIsFetching(false);
     };
     fetchWeather();
   }, [url]);
@@ -57,7 +61,8 @@ const TodayCard = ({ url }) => {
 
   return (
     <>
-      {weather && (
+      {isFetching && <div className="today-card today-card-loading"><span class="span-block">Loading Data...</span></div> }
+      {!isFetching && weather && (
         <div className="today-card">
           <div className="today-place-date-time">
             <div className="icon">
