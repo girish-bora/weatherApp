@@ -11,22 +11,30 @@ const TodayCard = ({ url }) => {
 
   const [isFetching, setIsFetching] = useState(false);
 
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState();
 
   useEffect(() => {
-    console.log("useEffect has been called");
+    //console.log("useEffect has been called");
+    
     const fetchWeather = async () => {
       setIsFetching(true);
+
+    try{
       const response = await fetch(url);
       const resData = await response.json();
 
       if(!response.ok){
-        setIsError(true);
-      } else{
-        setIsError(false);
+        throw new Error("Please enter a valid city.")
       }
 
+      setError();
+
       setWeather(resData);
+    }
+    catch(error){
+      setError({message: "Please enter a valid city."});
+    }
+    
       setIsFetching(false);
     };
     fetchWeather();
@@ -72,11 +80,15 @@ const TodayCard = ({ url }) => {
     day = days [(Math.floor((weather.dt + 19800) / 86400) +4) % 7];
   }
 
+  if(error){
+    return <div className="today-card today-card-loading"><span className="span-block">{error.message}</span></div>
+  }
+
   return (
     <>
       {isFetching && <div className="today-card today-card-loading"><span className="span-block">Loading Data...</span></div> }
-      {!isFetching && isError && <div className="today-card today-card-loading"><span className="span-block">Please enter a valid city.</span></div>}
-      {!isFetching && weather && !isError && (
+
+      {!isFetching && weather && (
         <div className="today-card">
           <div className="today-place-date-time">
             <div className="icon">
